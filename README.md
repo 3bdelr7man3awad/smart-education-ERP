@@ -141,8 +141,8 @@ A comprehensive Education Management System powered by AI and Data Analytics.
 1. **Setup & Installation**
    ```bash
    # Clone repository
-   git clone https://github.com/yourusername/smart-education-erp.git
-   cd smart-education-erp
+   git clone https://github.com/3bdelr7man3awad/smart-education-ERP.git
+   cd smart-education-ERP
 
    # Backend setup
    cd backend
@@ -226,6 +226,24 @@ For support, email support@smarteduerp.com or join our Slack channel.
 - Improved project structure
 - Enhanced documentation
 - Optimized build process
+- Set up development environment
+- Configured database with PostgreSQL
+- Set up Redis for caching
+- Started backend and frontend servers
+
+### Project Status
+- ✅ Repository created on GitHub
+- ✅ Development environment set up
+- ✅ Database configured and migrations applied
+- ✅ Backend server running
+- ✅ Frontend server running
+- ⏳ User authentication system
+- ⏳ Course management system
+- ⏳ Assignment tracking system
+- ⏳ Grade management system
+- ⏳ Attendance tracking system
+- ⏳ Analytics and reporting
+- ⏳ AI-powered features
 
 ### Upcoming Features (v1.1.0)
 - AI-powered analytics
