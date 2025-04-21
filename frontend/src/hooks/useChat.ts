@@ -1,36 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { io, Socket } from 'socket.io-client';
 import { api } from '../services/api';
-
-interface Chat {
-  id: number;
-  name: string | null;
-  is_group: boolean;
-  last_message?: {
-    content: string;
-    created_at: string;
-  };
-}
-
-interface Message {
-  id: number;
-  content: string;
-  sender_id: number;
-  sender_name?: string;
-  is_sender: boolean;
-  created_at: string;
-  attachments?: {
-    id: number;
-    file_name: string;
-    file_url: string;
-  }[];
-}
-
-interface ChatResponse {
-  chats: Chat[];
-  unread_counts: Record<number, number>;
-}
+import { Chat, Message, ChatResponse, SendMessageFunction } from '../types/chat';
 
 export const useChat = (chatId?: number) => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -38,7 +10,7 @@ export const useChat = (chatId?: number) => {
 
   // Fetch chats
   const { data: chatData, isLoading: chatsLoading } = useQuery<ChatResponse>(
-    'chats',
+    ['chats'],
     async () => {
       const response = await api.get('/api/v1/chats');
       return response.data;
@@ -76,7 +48,7 @@ export const useChat = (chatId?: number) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['messages', chatId]);
-        queryClient.invalidateQueries('chats');
+        queryClient.invalidateQueries(['chats']);
       },
     }
   );
@@ -89,14 +61,14 @@ export const useChat = (chatId?: number) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('chats');
+        queryClient.invalidateQueries(['chats']);
       },
     }
   );
 
   // Socket connection
   useEffect(() => {
-    const newSocket = io(process.env.REACT_APP_WS_URL || 'http://localhost:8000', {
+    const newSocket = io(import.meta.env.VITE_WS_URL || 'http://localhost:8000', {
       auth: {
         token: localStorage.getItem('token'),
       },
@@ -108,7 +80,7 @@ export const useChat = (chatId?: number) => {
 
     newSocket.on('new_message', (message: Message) => {
       queryClient.invalidateQueries(['messages', message.chat_id]);
-      queryClient.invalidateQueries('chats');
+      queryClient.invalidateQueries(['chats']);
     });
 
     setSocket(newSocket);
@@ -118,7 +90,7 @@ export const useChat = (chatId?: number) => {
     };
   }, [queryClient]);
 
-  const sendMessage = useCallback(
+  const sendMessage: SendMessageFunction = useCallback(
     async (content: string, files?: File[]) => {
       await sendMessageMutation.mutateAsync({ content, files });
     },

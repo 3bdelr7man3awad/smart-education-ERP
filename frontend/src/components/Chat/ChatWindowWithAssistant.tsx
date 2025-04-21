@@ -19,8 +19,9 @@ import { styled } from '@mui/material/styles';
 import { Send as SendIcon, AttachFile as AttachFileIcon, School as SchoolIcon } from '@mui/icons-material';
 import { formatDistanceToNow } from 'date-fns';
 import { useParams } from 'react-router-dom';
-import { useChat } from '../../hooks/useChat';
-import StudyAssistantWrapper from './StudyAssistantWrapper';
+import { useStudyChat } from '../../hooks/useStudyChat';
+import StudyAssistantContainer from './StudyAssistantContainer';
+import { Message } from '../../types/chat';
 
 const MessageContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,9 +43,9 @@ const MessageInput = styled(Box)(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.divider}`,
 }));
 
-const ChatWindow: React.FC = () => {
+const ChatWindowWithAssistant: React.FC = () => {
   const { chatId } = useParams<{ chatId: string }>();
-  const { currentChat, messages, loading, sendMessage, markAsRead } = useChat(Number(chatId));
+  const { currentChat, messages, loading, sendMessage, markAsRead } = useStudyChat(Number(chatId));
   const [newMessage, setNewMessage] = useState('');
   const [attachments, setAttachments] = useState<File[]>([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -52,7 +53,7 @@ const ChatWindow: React.FC = () => {
 
   useEffect(() => {
     if (chatId) {
-      markAsRead(Number(chatId));
+      markAsRead();
     }
   }, [chatId, markAsRead]);
 
@@ -107,7 +108,7 @@ const ChatWindow: React.FC = () => {
       {activeTab === 0 ? (
         <>
           <MessagesList>
-            {messages.map((message, index) => (
+            {messages.map((message: Message) => (
               <ListItem
                 key={message.id}
                 sx={{
@@ -145,7 +146,7 @@ const ChatWindow: React.FC = () => {
                         </Typography>
                       }
                     />
-                    {message.attachments?.length > 0 && (
+                    {message.attachments && message.attachments.length > 0 && (
                       <Box mt={1}>
                         {message.attachments.map((attachment) => (
                           <Typography
@@ -192,10 +193,10 @@ const ChatWindow: React.FC = () => {
           </MessageInput>
         </>
       ) : (
-        <StudyAssistantWrapper sendMessage={sendMessage} />
+        <StudyAssistantContainer sendMessage={sendMessage} />
       )}
     </MessageContainer>
   );
 };
 
-export default ChatWindow; 
+export default ChatWindowWithAssistant; 

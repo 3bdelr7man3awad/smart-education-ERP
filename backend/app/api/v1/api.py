@@ -11,6 +11,7 @@ from app.api.v1.endpoints import (
     attendance,
     notifications
 )
+from app.api.endpoints import study_assistant
 
 api_router = APIRouter()
 
@@ -23,4 +24,5 @@ api_router.include_router(courses.router, prefix="/courses", tags=["Courses"])
 api_router.include_router(assignments.router, prefix="/assignments", tags=["Assignments"])
 api_router.include_router(grades.router, prefix="/grades", tags=["Grades"])
 api_router.include_router(attendance.router, prefix="/attendance", tags=["Attendance"])
-api_router.include_router(notifications.router, prefix="/notifications", tags=["Notifications"]) 
+api_router.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
+api_router.include_router(study_assistant.router, prefix="/study-assistant", tags=["AI Study Assistant"]) 
